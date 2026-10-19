@@ -74,14 +74,26 @@ def load_data():
 with st.spinner("데이터를 불러오는 중입니다..."):
     geojson_data, df_ratio = load_data()
 
-# Plotly Choropleth 생성 (보라색 계열: Purples 사용)
+# 선명한 보라색 커스텀 색상 팔레트 (연보라 -> 진한 보라)
+custom_purples = [
+    "#f3e5f5",  # 아주 연한 라벤더 보라
+    "#e1bee7",  # 연보라
+    "#ce93d8",  # 파스텔 보라
+    "#ba68c8",  # 선명한 보라
+    "#ab47bc",  # 중간 보라
+    "#8e24aa",  # 진한 보라
+    "#6a1b9a",  # 딥 퍼플
+    "#4a148c",  # 다크 퍼플
+]
+
+# Plotly Choropleth 생성
 fig = px.choropleth(
     df_ratio,
     geojson=geojson_data,
     locations="sigungu_code",
     featureidkey="properties.코드",
     color="elderly_ratio",
-    color_continuous_scale="Purples",
+    color_continuous_scale=custom_purples,
     hover_data={"sigungu_code": False, "시군구명": True, "elderly_ratio": True},
     labels={"elderly_ratio": "고령화율 (%)", "시군구명": "지역명"},
 )
@@ -89,13 +101,3 @@ fig = px.choropleth(
 # 배경 타일 및 지도 스타일 설정 (타일 없이 경계만 표시)
 fig.update_geos(
     visible=False,
-    fitbounds="locations",
-)
-
-fig.update_layout(
-    margin={"r": 0, "t": 40, "l": 0, "b": 0},
-    coloraxis_colorbar=dict(title="고령화율 (%)"),
-)
-
-# 스트림릿 화면에 출력
-st.plotly_chart(fig, use_container_width=True)
