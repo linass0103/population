@@ -17,11 +17,10 @@ def load_data():
     geojson_data = geojson_res.json()
 
     # 2. 인구 CSV 데이터 읽기 (Raw URL / Zip 압축)
-    # GitHub Blob URL -> Raw URL 변환
     pop_url = "https://raw.githubusercontent.com/linass0103/population/main/population_ts_yearly_gender.zip"
     df = pd.read_csv(pop_url, compression="zip")
 
-    # '연도' 열이 존재할 경우 2026년 데이터만 추출 (숫자 또는 문자열 처리)
+    # '연도' 열이 존재할 경우 2026년 데이터만 추출
     if "연도" in df.columns:
         df = df[df["연도"].astype(str) == "2026"]
 
@@ -75,14 +74,14 @@ def load_data():
 with st.spinner("데이터를 불러오는 중입니다..."):
     geojson_data, df_ratio = load_data()
 
-# Plotly Choropleth 생성
+# Plotly Choropleth 생성 (보라색 계열: Purples 사용)
 fig = px.choropleth(
     df_ratio,
     geojson=geojson_data,
     locations="sigungu_code",
     featureidkey="properties.코드",
     color="elderly_ratio",
-    color_continuous_scale="Reds",
+    color_continuous_scale="Purples",
     hover_data={"sigungu_code": False, "시군구명": True, "elderly_ratio": True},
     labels={"elderly_ratio": "고령화율 (%)", "시군구명": "지역명"},
 )
